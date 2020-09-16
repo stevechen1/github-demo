@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">    <title>github-fontend</title>
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_2073352_2bicil32bve.css
+    ">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.js"></script>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+
+}
+html,body,main {
+    position: relative;
+    height: 100%;
+}
+body {
+    line-height: 1.2;
+    font-size: 13px;
+}
+main>section {
+    height: calc(100% - 40px);
+    padding: 10px;
+    overflow: scroll; 
+    background-color: #fff;
+    -webkit-overflow-scrolling: touch;
+}
+main>section {
+    display: none;
+}
+main>section:first-child {
+    display: block;
+}
+.item {
+    border-bottom: 1px solid rgb(220, 209, 209);
+    padding-bottom: 15px;
+    padding-top: 10px;
+    display: flex;
+}
+.item a{
+    display: flex;
+}
+.item .order {
+    display: flex;
+    align-items: center;
+}
+.item .order span {
+    background-color: green;
+    padding:0 5px;
+    color: white;
+}
+.item .detail {
+    padding-left: 30px;
+}
+.item .detail .extra {
+    color: #333333;
+    margin-top: 15px;
+}
+.item img {
+    width: 100px;
+border-radius: 50%;
+}
+.item a h1 {
+    margin-top: 20px;
+}
+.loading {
+    text-align: center;
+    padding-top: 10px;
+    display: none;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg);}
+}
+.loading .iconfont {
+    display: inline-block;
+    animation: 1s rotate linear infinite;
+    }  
+#search {
+    height: calc(100% - 60px);
+}
+section .search-area{
+    color: #333;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+}
+section .search-area input {
+    width: calc(100% - 60px);
+    padding: 15px;
+    background-color: #ccc;
+    border: none;
+    height: 60px;
+    border-radius: 12px;
+    box-shadow: none;
+    outline: none;
+}
+section .search-area .button {
+    position: absolute;
+    right: 0px;
+    padding: 15px 10px;
+    color: #333;
+    height: 60px;
+    padding: 20px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: rgb(22, 158, 106);
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    height: 80px;
+    width: 100%;
+    border-top: 1px solid black;
+    display: flex;
+    background-color: #fff;
+}
+ footer>div {
+    flex: 1;
+    text-align: center;
+    color: #666;
+    padding-top: 15px;
+}
+footer .active{
+    color: #80067cf7;
+}
+footer>div>span{
+    display: block; 
+} 
+footer .iconfont {
+    font-size: 30px;
+}
+    </style>
+</head>
+<body>
+    <main >
+        <section id="repo-board">
+             <div class="container">
+               <!--<div class="item">
+                    <a href="">
+                        <div class="order"><span>1</span></div>
+                        <div class="detail">
+                        <h1>Ghost </h1>
+                        <div class="extra">Knockout makes it easier to create rich, responsive UIs with JavaScript</div>
+                        <div class="extra">
+                            <span class = "iconfont icon-watch">
+
+                            </span></div>
+                     </div>
+                    </a>
+                 </div>-->
+           </div>  
+           <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section id="user-board">
+            <div class="container">
+                <!-- <div class="item">
+                    <a href="">
+                        <div class="cover">
+                            <img src="" alt="">
+                        </div>
+                        <div class="detail">
+                        <h1></h1>
+                    </a>
+                </div>  -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section id="search">
+            <div class="wrap">
+                <div class="search-area">
+                    <input type="text" placeholder="PhpIsTheBestLanguage" ><span class="button">搜索</span>
+                </div>
+                <div class="search-result">
+                    <div class="container">
+                       
+                    </div>
+                </div>
+            </div>
+                
+        </section>
+    </main>
+    <footer>
+            <div class="active">
+                <span class="iconfont icon-rep"></span>
+                <span>前端项目排行</span>
+            </div>
+            <div>
+                <span class="iconfont icon-user"></span>
+                <span>前端高产用户排行</span>
+            </div>
+            <div>
+                <span class="iconfont icon-search"></span>
+                <span>项目搜索</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // $.ajax({
+//     url: 'https://api.github.com/search/users?q=followers:>1000+location:china+language:javascript',
+//     data: {
+//         page: this.page
+//     },
+//     dataType: 'jsonp' 
+// }).done(function(ret){
+//     return console.log(ret)
+// })
+// var Helpers = {
+//     isTobottom: function($viewport,$content){
+//         return $viewport.height() + $viewport.scrollTop() + 30 >= $content.height()
+//     }
+// }
+
+        
+var Helpers = {
+            isToBottom: function($viewport, $content) {
+            return $viewport.height() + $viewport.scrollTop() + 30 > $content.height() 
+                    }
+            }
+var Paging = {
+            init: function(){
+                this.$tabs = $('footer>div')
+                this.$pages = $('main>section')
+                this.bind()
+            },
+            bind: function(){
+                var _this = this
+                this.$tabs.on('click', function(){
+                var $this = $(this)
+                var index = $this.index()
+                $this.addClass('active')
+                    .siblings().removeClass('active')
+                    
+                _this.$pages.eq(index).fadeIn().siblings().fadeOut()
+                })
+            }
+    }
+var RepoBoard = {
+            init: function(){
+                var _this = this
+                this.$container = $('#repo-board')
+                this.$content = this.$container.find('.container')
+                this.page = 1
+                this.count = 30
+                this.isFinshed = false
+                this.isLoading = false
+                this.bind()
+                this.getData(function(result){
+                _this.renderData(result.data)
+                _this.page++
+                })
+            },
+            bind: function(){
+                var _this = this
+
+                this.$container.on('scroll', function(){
+                console.log(_this.isLoading)
+                if(Helpers.isToBottom(_this.$container, _this.$content) && !_this.isFinshed && !_this.isLoading){
+                    console.log('to bottom')
+                    _this.getData(function(result){
+                    _this.renderData(result.data)
+                    _this.page++
+                    if(_this.page * _this.count > result.data.total_count ) {
+                        _this.isFinshed = true
+                    }
+                    })
+                }
+                })
+            },
+            getData: function(callback){
+                var _this = this
+                this.isLoading = true
+                this.$container.find('.loading').show(400)
+                $.ajax({
+                url: 'https://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc',
+                data: {
+                    page: this.page
+                },
+                dataType: 'jsonp'
+                }).done(function(ret){
+                _this.isLoading = false
+                _this.$container.find('.loading').hide(400)
+                callback(ret)
+                })
+            },
+            renderData(data){
+                var _this = this
+                data.items.forEach(function(item, index){
+                var $node = _this.createNode(item, (_this.page-1)*_this.count+index+1)
+                _this.$content.append($node)    
+                })
+            },
+            createNode: function(subject, index){
+                var $node = $(`<div class="item">
+                    <a href="">
+                        <div class="order"><span>1</span></div>
+                        <div class="detail">
+                            <h1>vue </h1>
+                            <div class="description">🖖 Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI on the web.</div>
+                            <div class="extra"><span class="iconfont icon-watch"></span></div>  
+                        </div>
+                    </a>
+                </div> `)
+                $node.find('.order span').text(index)
+                $node.find('a').attr('href', subject.html_url)    
+                $node.find('.detail h1').text(subject.name)  
+                $node.find('.detail .description').text(subject.description)
+                $node.find('.detail .collection').text(subject.collect_count)  
+                $node.find('.detail .iconfont').text(subject.watchers_count)
+                return $node
+        
+        }
+        
+    } 
+    var UserBoard = {
+        init: function(){
+        var _this = this
+        this.$container = $('#user-board')
+        this.$content = this.$container.find('.container')
+        this.page = 1
+        this.count = 30
+        this.isFinshed = false
+        this.isLoading = false
+        this.bind()
+        this.getData(function(result){
+        _this.renderData(result.data)
+        _this.page++
+        })
+    },
+        bind: function(){
+            var _this = this
+            this.$container.on('scroll', function(){
+            console.log(_this.isLoading)
+            if(Helpers.isToBottom(_this.$container, _this.$content) && !_this.isFinshed && !_this.isLoading){
+                console.log('to bottom')
+                _this.getData(function(result){
+                _this.renderData(result.data)
+                _this.page++
+                if(_this.page * _this.count > result.data.total_count ) {
+                    _this.isFinshed = true
+                }
+                })
+            }
+            })
+        },
+        getData: function(callback){
+            var _this = this
+            this.isLoading = true
+            this.$container.find('.loading').show(400)
+            $.ajax({
+            url: 'https://api.github.com/search/users?q=followers:>1000+location:china+language:javascript',
+            data: {
+                page: this.page
+            },
+            dataType: 'jsonp'
+            }).done(function(ret){
+            _this.isLoading = false
+            _this.$container.find('.loading').hide(400)
+            callback(ret)
+            })
+        },
+        renderData(data){
+            var _this = this
+            data.items.forEach(function(item, index){
+            var $node = _this.createNode(item, (_this.page-1)*_this.count+index+1)
+            _this.$content.append($node)    
+            })
+        },
+        createNode: function(subject, index){
+            var $node = $(`<div class="item">
+                <a href="">
+                    <div class="cover"><img src="" alt=""></div>
+                    <div class="detail">
+                    <h1>Ghost </h1>
+                </a>
+                </div>  `)
+                $node.find('.cover img').attr('src', subject.avatar_url )
+                $node.find('a').attr('href', subject.html_url )    
+                $node.find('.detail h1').text(subject.login )  
+                return $node
+        }
+    }
+
+var Search = {
+            init: function() {
+                    this.page = 1
+                    this.count = 30
+                    this.isFinshed = false
+                    this.isLoading = false
+                    this.$container = $('#search')
+                    this.$content = this.$container.find('.container')
+                    this.bind()
+        },
+
+        bind: function() {
+                    var _this = this
+                    this.$container.find('.search-area .button').on('click', function(){
+                        _this.getData(function(result){
+                            _this.renderData(result.data)
+                    })
+                    })
+                    // console.log(this.$container.find('.search-area input'))
+                    this.$container.find('.search-area input').on('keyup', function(e){
+                        if(e.key === 'Enter') {
+                            _this.getData(function(result){
+                            _this.renderData(result.data)
+                            })
+                        }
+                    })
+                    this.$container.on('scroll', function(){
+                    console.log(_this.isLoading)
+                    if(Helpers.isToBottom(_this.$container, _this.$container.find('.wrap')) && !_this.isFinshed && !_this.isLoading){
+                        console.log('to bottom')
+                        _this.getData(function(result){
+                        _this.renderData(result.data)
+                        _this.page++
+                        if(_this.page * _this.count > result.data.total_count) {
+                            _this.isFinshed = true
+                        }
+                        
+                        })
+                    }
+                    })
+                },
+
+        getData: function(callback){
+                var _this = this
+                var keyword = this.$container.find('.search-area input').val()
+                this.isLoading = true
+                $.ajax({
+                url: `https://api.github.com/search/repositories?q=${keyword}+language:javascript&sort=stars&order=desc&page=${_this.page}`,
+                dataType: 'jsonp'
+                }).done(function(ret){
+                _this.isLoading = false
+                callback(ret)
+                })
+         },
+
+        renderData(data){
+                var _this = this
+                data.items.forEach(function(item, index){
+                var $node = _this.createNode(item, (_this.page-1)*_this.count+index+1)
+                _this.$content.append($node)    
+                })
+        },
+         createNode: function(subject, index){
+                var $node = $(`<div class="item">
+                    <a href="">
+                        <div class="order"><span>1</span></div>
+                        <div class="detail">
+                            <h1>vue </h1>
+                            <div class="description">🖖 Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI on the web.</div>
+                            <div class="extra"><span class="iconfont icon-watch"></span></div>  
+                        </div>
+                    </a>
+                </div> `)
+                $node.find('.order span').text(index)
+                $node.find('a').attr('href', subject.html_url)    
+                $node.find('.detail h1').text(subject.name)  
+                $node.find('.detail .description').text(subject.description)
+                $node.find('.detail .collection').text(subject.collect_count)  
+                $node.find('.detail .iconfont').text(subject.watchers_count)
+                return $node
+        
+        }
+    }
+    var App = {
+                    init: function(){
+                        Paging.init()
+                        RepoBoard.init()
+                        UserBoard.init()
+                        Search.init()
+                    }
+            }
+             App.init()
+    </script>
+</body>
+</html>
